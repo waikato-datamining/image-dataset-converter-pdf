@@ -24,8 +24,8 @@ optional arguments:
                         Whether to use the image name as the title for the
                         image. (default: False)
   -s IMAGE_SCALE, --image_scale IMAGE_SCALE
-                        The scale factor to apply to the image (1.0=100%).
-                        (default: 1.0)
+                        The scale factor to apply to the image (1.0=100%,
+                        -1=best fit). (default: 1.0)
   -m METADATA_KEYS, --metadata_keys METADATA_KEYS
                         The keys of meta-data values to display below the
                         image (comma-separated list). (default: None)

@@ -23,7 +23,7 @@ class PdfImageWriter(BatchWriter):
         :type output_dir: str
         :param image_name_as_title: whether to use the image name as title for the image
         :type image_name_as_title: bool
-        :param image_scale: the scale factor for images (1.0=100%)
+        :param image_scale: the scale factor for images (1.0=100%, -1=best fit)
         :type image_scale: float
         :param metadata_keys: the comma-separated list of meta-data keys to display below the image
         :type metadata_keys: str
@@ -75,7 +75,7 @@ class PdfImageWriter(BatchWriter):
         parser = super()._create_argparser()
         parser.add_argument("-o", "--output_file", type=str, help="The PDF file to write the images to.", required=True)
         parser.add_argument("-t", "--image_name_as_title", action="store_true", help="Whether to use the image name as the title for the image.", required=False)
-        parser.add_argument("-s", "--image_scale", type=float, help="The scale factor to apply to the image (1.0=100%%).", required=False, default=1.0)
+        parser.add_argument("-s", "--image_scale", type=float, help="The scale factor to apply to the image (1.0=100%%, -1=best fit).", required=False, default=1.0)
         parser.add_argument("-m", "--metadata_keys", type=str, help="The keys of meta-data values to display below the image (comma-separated list).", required=False, default=None)
         parser.add_argument("-x", "--offset_x", type=int, help="The horizontal offset on the page.", required=False, default=50)
         parser.add_argument("-y", "--offset_y", type=int, help="The vertical offset on the page.", required=False, default=50)
@@ -120,6 +120,8 @@ class PdfImageWriter(BatchWriter):
             self.image_name_as_title = False
         if self.image_scale is None:
             self.image_scale = 1.0
+        if (self.image_scale <= 0) and (self.image_scale != -1):
+            raise Exception("Image scale can only be >0 or -1 for best fit, provided: %s" % str(self.image_scale))
         if self.offset_x is None:
             self.offset_x = 50
         if self.offset_y is None:
@@ -136,7 +138,12 @@ class PdfImageWriter(BatchWriter):
         """
         self.logger().info("Creating output file: %s" % self.output_file)
         pdf_canvas = canvas.Canvas(self.output_file, pagesize=A4)
-        width, height = A4
+        page_width, page_height = A4
+        available_width = int(page_width - 2*self.offset_x)
+        available_height = int(page_height - 2*self.offset_y)
+        if self.image_name_as_title:
+            available_height -= self.gap
+        available_ratio = available_width / available_height
 
         keys = None
         if self.metadata_keys is not None:
@@ -145,7 +152,7 @@ class PdfImageWriter(BatchWriter):
         for item in data:
             self.logger().info("Adding: %s" % item.image_name)
 
-            y = height - self.offset_y
+            y = page_height - self.offset_y
             x = self.offset_x
 
             # title
@@ -156,7 +163,16 @@ class PdfImageWriter(BatchWriter):
             # image
             img = item.image
             img_width, img_height = item.image_size
-            if self.image_scale != 1.0:
+            img_ratio = img_width / img_height
+            if self.image_scale == -1:
+                if img_ratio >= available_ratio:  # wider than tall
+                    img_width = available_width
+                    img_height = int(available_width / img_ratio)
+                else:
+                    img_width = int(available_height * img_ratio)
+                    img_height = available_height
+                img = img.resize((img_width, img_height))
+            elif self.image_scale != 1.0:
                 img_width = int(img_width * self.image_scale)
                 img_height = int(img_height * self.image_scale)
                 img = img.resize((img_width, img_height))
