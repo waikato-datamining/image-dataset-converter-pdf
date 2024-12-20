@@ -13,7 +13,7 @@ def _read(f):
 
 
 setup(
-    name="image-dataset-converter-pdf",
+    name="image_dataset_converter_pdf",
     description="PDF support for the image-dataset-converter library.",
     long_description=(
             _read('DESCRIPTION.rst') + b'\n' +
@@ -31,7 +31,7 @@ setup(
     },
     packages=find_namespace_packages(where='src'),
     install_requires=[
-        "image-dataset-converter",
+        "image_dataset_converter",
         "pypdf",
         "reportlab",
     ],
