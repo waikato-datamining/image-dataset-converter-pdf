@@ -7,7 +7,7 @@ PDF support for the image-dataset-converter library.
 Via PyPI:
 
 ```bash
-pip install image-dataset-converter-pdf
+pip install image_dataset_converter_pdf
 ```
 
 The latest code straight from the repository:
