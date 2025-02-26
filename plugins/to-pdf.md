@@ -11,7 +11,7 @@ usage: to-pdf [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [-N LOGGER_NAME]
 
 Saves the images in a PDF.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         The logging level to use. (default: WARN)
