@@ -19,7 +19,10 @@ options:
                         The custom name to use for the logger, uses the plugin
                         name by default (default: None)
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
-                        The PDF file to write the images to. (default: None)
+                        The PDF file to write the images to. Supported
+                        placeholders: {INPUT_PATH}, {INPUT_NAMEEXT},
+                        {INPUT_NAMENOEXT}, {INPUT_EXT}, {INPUT_PARENT_PATH},
+                        {INPUT_PARENT_NAME} (default: None)
   -t, --image_name_as_title
                         Whether to use the image name as the title for the
                         image. (default: False)
@@ -36,3 +39,12 @@ options:
   -g GAP, --gap GAP     The vertical gap between title, image, meta-data.
                         (default: 50)
 ```
+
+Available placeholders:
+
+* `{INPUT_PATH}`: The directory part of the current input, i.e., `/some/where` of input `/some/where/file.txt`.
+* `{INPUT_NAMEEXT}`: The name (incl extension) of the current input, i.e., `file.txt` of input `/some/where/file.txt`.
+* `{INPUT_NAMENOEXT}`: The name (excl extension) of the current input, i.e., `file` of input `/some/where/file.txt`.
+* `{INPUT_EXT}`: The extension of the current input (incl dot), i.e., `.txt` of input `/some/where/file.txt`.
+* `{INPUT_PARENT_PATH}`: The directory part of the parent directory of the current input, i.e., `/some` of input `/some/where/file.txt`.
+* `{INPUT_PARENT_NAME}`: The name of the parent directory of the current input, i.e., `where` of input `/some/where/file.txt`.

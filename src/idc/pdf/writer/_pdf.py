@@ -4,13 +4,14 @@ from typing import List, Iterable
 
 from wai.logging import LOGGING_WARNING
 
+from seppl import placeholder_list, InputBasedPlaceholderSupporter
 from idc.api import ImageData, BatchWriter
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
 
-class PdfImageWriter(BatchWriter):
+class PdfImageWriter(BatchWriter, InputBasedPlaceholderSupporter):
 
     def __init__(self, output_dir: str = None, image_name_as_title: bool = None,
                  image_scale: float = None, metadata_keys: str = None,
@@ -73,7 +74,7 @@ class PdfImageWriter(BatchWriter):
         :rtype: argparse.ArgumentParser
         """
         parser = super()._create_argparser()
-        parser.add_argument("-o", "--output_file", type=str, help="The PDF file to write the images to.", required=True)
+        parser.add_argument("-o", "--output_file", type=str, help="The PDF file to write the images to. " + placeholder_list(obj=self), required=True)
         parser.add_argument("-t", "--image_name_as_title", action="store_true", help="Whether to use the image name as the title for the image.", required=False)
         parser.add_argument("-s", "--image_scale", type=float, help="The scale factor to apply to the image (1.0=100%%, -1=best fit).", required=False, default=1.0)
         parser.add_argument("-m", "--metadata_keys", type=str, help="The keys of meta-data values to display below the image (comma-separated list).", required=False, default=None)
@@ -112,10 +113,6 @@ class PdfImageWriter(BatchWriter):
         Initializes the processing, e.g., for opening files or databases.
         """
         super().initialize()
-        output_dir = os.path.dirname(self.output_file)
-        if not os.path.exists(output_dir):
-            self.logger().info("Creating output dir: %s" % output_dir)
-            os.makedirs(output_dir)
         if self.image_name_as_title is None:
             self.image_name_as_title = False
         if self.image_scale is None:
@@ -136,8 +133,13 @@ class PdfImageWriter(BatchWriter):
         :param data: the data to write
         :type data: Iterable
         """
-        self.logger().info("Creating output file: %s" % self.output_file)
-        pdf_canvas = canvas.Canvas(self.output_file, pagesize=A4)
+        output_file = self.session.expand_placeholders(self.output_file)
+        output_dir = os.path.dirname(output_file)
+        if not os.path.exists(output_dir):
+            self.logger().info("Creating output dir: %s" % output_dir)
+            os.makedirs(output_dir)
+        self.logger().info("Creating output file: %s" % output_file)
+        pdf_canvas = canvas.Canvas(output_file, pagesize=A4)
         page_width, page_height = A4
         available_width = int(page_width - 2*self.offset_x)
         available_height = int(page_height - 2*self.offset_y)
