@@ -4,7 +4,7 @@ from typing import List, Iterable
 
 from wai.logging import LOGGING_WARNING
 
-from seppl import placeholder_list, InputBasedPlaceholderSupporter
+from seppl.placeholders import placeholder_list, InputBasedPlaceholderSupporter
 from idc.api import ImageData, BatchWriter
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas

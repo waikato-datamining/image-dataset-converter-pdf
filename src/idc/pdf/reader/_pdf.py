@@ -2,9 +2,9 @@ import argparse
 from typing import List, Iterable, Union
 
 from seppl.io import locate_files
+from seppl.placeholders import PlaceholderSupporter, placeholder_list
 from wai.logging import LOGGING_WARNING
 
-from seppl import PlaceholderSupporter, placeholder_list
 from idc.api import DATATYPES, data_type_to_class, ImageData
 from idc.api import Reader
 from pypdf import PdfReader
