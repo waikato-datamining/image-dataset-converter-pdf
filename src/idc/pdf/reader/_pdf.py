@@ -13,7 +13,8 @@ from pypdf import PdfReader
 class PdfImageReader(Reader, PlaceholderSupporter):
 
     def __init__(self, source: Union[str, List[str]] = None, source_list: Union[str, List[str]] = None,
-                 data_type: str = None, logger_name: str = None, logging_level: str = LOGGING_WARNING):
+                 data_type: str = None, resume_from: str = None,
+                 logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the reader.
 
@@ -21,6 +22,8 @@ class PdfImageReader(Reader, PlaceholderSupporter):
         :param source_list: the file(s) with filename(s)
         :param data_type: the type of output to generate from the images
         :type data_type: str
+        :param resume_from: the file to resume from (glob)
+        :type resume_from: str
         :param logger_name: the name to use for the logger
         :type logger_name: str
         :param logging_level: the logging level to use
@@ -30,6 +33,7 @@ class PdfImageReader(Reader, PlaceholderSupporter):
         self.source = source
         self.source_list = source_list
         self.data_type = data_type
+        self.resume_from = resume_from
         self._inputs = None
         self._current_input = None
         self._output_cls = None
@@ -62,6 +66,7 @@ class PdfImageReader(Reader, PlaceholderSupporter):
         parser = super()._create_argparser()
         parser.add_argument("-i", "--input", type=str, help="Path to the PDF file(s) to extract the images from; glob syntax is supported; " + placeholder_list(obj=self), required=False, nargs="*")
         parser.add_argument("-I", "--input_list", type=str, help="Path to the text file(s) listing the PDF files to use; " + placeholder_list(obj=self), required=False, nargs="*")
+        parser.add_argument("--resume_from", type=str, help="Glob expression matching the file to resume from, e.g., '*/012345.pdf'", required=False)
         parser.add_argument("-t", "--data_type", choices=DATATYPES, type=str, default=None, help="The type of data to forward", required=True)
         return parser
 
@@ -76,6 +81,7 @@ class PdfImageReader(Reader, PlaceholderSupporter):
         self.source = ns.input
         self.source_list = ns.input_list
         self.data_type = ns.data_type
+        self.resume_from = ns.resume_from
 
     def generates(self) -> List:
         """
@@ -96,7 +102,7 @@ class PdfImageReader(Reader, PlaceholderSupporter):
         super().initialize()
         if self.data_type is None:
             raise Exception("No data type defined!")
-        self._inputs = locate_files(self.source, input_lists=self.source_list, fail_if_empty=True, default_glob="*.pdf")
+        self._inputs = locate_files(self.source, input_lists=self.source_list, fail_if_empty=True, default_glob="*.pdf", resume_from=self.resume_from)
         self._output_cls = data_type_to_class(self.data_type)
 
     def read(self) -> Iterable:

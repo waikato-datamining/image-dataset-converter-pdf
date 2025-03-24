@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.0.3 (????-??-??)
+------------------
+
+- added `--resume_from` option to `from-pdf` reader that allows resuming the data processing
+  from the first file that matches this glob expression (e.g., `*/012345.pdf`)
+
+
 0.0.2 (2025-03-14)
 ------------------
 
