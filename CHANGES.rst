@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0.3 (????-??-??)
+0.0.3 (2025-04-03)
 ------------------
 
 - added `--resume_from` option to `from-pdf` reader that allows resuming the data processing
