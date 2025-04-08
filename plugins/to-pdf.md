@@ -6,7 +6,7 @@ Saves the images in a PDF.
 
 ```
 usage: to-pdf [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [-N LOGGER_NAME]
-              -o OUTPUT_FILE [-t] [-s IMAGE_SCALE] [-m METADATA_KEYS]
+              [--skip] -o OUTPUT_FILE [-t] [-s IMAGE_SCALE] [-m METADATA_KEYS]
               [-x OFFSET_X] [-y OFFSET_Y] [-g GAP]
 
 Saves the images in a PDF.
@@ -18,6 +18,8 @@ options:
   -N LOGGER_NAME, --logger_name LOGGER_NAME
                         The custom name to use for the logger, uses the plugin
                         name by default (default: None)
+  --skip                Disables the plugin, removing it from the pipeline.
+                        (default: False)
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
                         The PDF file to write the images to. Supported
                         placeholders: {INPUT_PATH}, {INPUT_NAMEEXT},
