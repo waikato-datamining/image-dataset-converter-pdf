@@ -7,7 +7,7 @@ Extracts the images from the PDF file(s) and forwards them as the specified data
 ```
 usage: from-pdf [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [-N LOGGER_NAME]
                 [-i [INPUT ...]] [-I [INPUT_LIST ...]]
-                [--resume_from RESUME_FROM] -t {ic,is,od}
+                [--resume_from RESUME_FROM] -t {dp,ic,is,od}
 
 Extracts the images from the PDF file(s) and forwards them as the specified
 data type.
@@ -30,9 +30,17 @@ options:
   --resume_from RESUME_FROM
                         Glob expression matching the file to resume from,
                         e.g., '*/012345.pdf' (default: None)
-  -t {ic,is,od}, --data_type {ic,is,od}
+  -t {dp,ic,is,od}, --data_type {dp,ic,is,od}
                         The type of data to forward (default: None)
 ```
+
+The following data types are available:
+
+* dp: depth
+* ic: image classification
+* is: image segmentation
+* od: object detection
+
 
 Available placeholders:
 
