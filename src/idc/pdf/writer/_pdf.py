@@ -5,7 +5,8 @@ from typing import List, Iterable
 from wai.logging import LOGGING_WARNING
 
 from seppl.placeholders import placeholder_list, InputBasedPlaceholderSupporter
-from idc.api import ImageData, BatchWriter
+from kasperl.api import BatchWriter
+from idc.api import ImageData
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
