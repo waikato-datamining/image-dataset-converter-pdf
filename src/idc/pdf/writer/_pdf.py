@@ -4,7 +4,7 @@ from typing import List, Iterable
 
 from wai.logging import LOGGING_WARNING
 
-from seppl.placeholders import placeholder_list, InputBasedPlaceholderSupporter
+from seppl.variables import InputBasedVariableSupporter, variable_list
 from kasperl.api import BatchWriter
 from idc.api import ImageData
 from reportlab.lib.pagesizes import A4
@@ -12,7 +12,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 
 
-class PdfImageWriter(BatchWriter, InputBasedPlaceholderSupporter):
+class PdfImageWriter(BatchWriter, InputBasedVariableSupporter):
 
     def __init__(self, output_dir: str = None, image_name_as_title: bool = None,
                  image_scale: float = None, metadata_keys: str = None,
@@ -75,7 +75,7 @@ class PdfImageWriter(BatchWriter, InputBasedPlaceholderSupporter):
         :rtype: argparse.ArgumentParser
         """
         parser = super()._create_argparser()
-        parser.add_argument("-o", "--output_file", type=str, help="The PDF file to write the images to. " + placeholder_list(obj=self), required=True)
+        parser.add_argument("-o", "--output_file", type=str, help="The PDF file to write the images to. " + variable_list(obj=self), required=True)
         parser.add_argument("-t", "--image_name_as_title", action="store_true", help="Whether to use the image name as the title for the image.", required=False)
         parser.add_argument("-s", "--image_scale", type=float, help="The scale factor to apply to the image (1.0=100%%, -1=best fit).", required=False, default=1.0)
         parser.add_argument("-m", "--metadata_keys", type=str, help="The keys of meta-data values to display below the image (comma-separated list).", required=False, default=None)
@@ -134,7 +134,7 @@ class PdfImageWriter(BatchWriter, InputBasedPlaceholderSupporter):
         :param data: the data to write
         :type data: Iterable
         """
-        output_file = self.session.expand_placeholders(self.output_file)
+        output_file = self.session.expand_variables(self.output_file)
         output_dir = os.path.dirname(output_file)
         if not os.path.exists(output_dir):
             self.logger().info("Creating output dir: %s" % output_dir)
